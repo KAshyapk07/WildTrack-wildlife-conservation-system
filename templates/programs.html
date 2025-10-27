@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Manage Programs - WildTrack</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body { background-color: #0a0a0a; color: #f2f2f2; }
+
+    h2.title {
+      text-align: center;
+      color: #5cff7a;
+      margin-top: 40px;
+      margin-bottom: 30px;
+      text-shadow: 0 0 10px #2e8b57;
+    }
+
+    .program-form {
+      max-width: 900px;
+      margin: 0 auto 50px auto;
+      background: #111;
+      border-radius: 15px;
+      padding: 30px 40px;
+      box-shadow: 0 0 25px rgba(92, 255, 122, 0.1);
+      transition: 0.3s;
+    }
+
+    .program-form:hover {
+      box-shadow: 0 0 30px rgba(92, 255, 122, 0.3);
+    }
+
+    .program-form h4 {
+      color: #5cff7a;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .program-form input, .program-form select {
+      background: #1a1a1a;
+      border: 1px solid #333;
+      color: #f2f2f2;
+      border-radius: 8px;
+      padding: 10px;
+      width: 100%;
+    }
+
+    .program-form button {
+      background: #5cff7a;
+      color: #000;
+      font-weight: 600;
+      border: none;
+      border-radius: 10px;
+      padding: 10px 25px;
+      margin-top: 15px;
+      transition: 0.3s;
+    }
+
+    .program-form button:hover {
+      background: #4ce06b;
+      box-shadow: 0 0 15px #4ce06b;
+    }
+
+    table {
+      text-align: center;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    thead {
+      background-color: #b6e2bf;
+      color: #000;
+    }
+
+    tbody tr:hover {
+      background-color: #222;
+    }
+
+    .btn-danger {
+      background-color: #e74c3c;
+      border: none;
+    }
+
+    .btn-danger:hover {
+      background-color: #c0392b;
+    }
+
+    footer {
+      margin-top: 50px;
+      text-align: center;
+      padding: 20px;
+      border-top: 1px solid #333;
+      color: #aaa;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo"> WILDTRACK</div>
+    <nav>
+  <a href="{{ url_for('home') }}" class="{{ 'active' if active_page == 'home' else '' }}">Home</a>
+  <a href="{{ url_for('species') }}" class="{{ 'active' if active_page == 'species' else '' }}">Species</a>
+  <a href="{{ url_for('habitats') }}" class="{{ 'active' if active_page == 'habitats' else '' }}">Habitats</a>
+  <a href="{{ url_for('programs') }}" class="{{ 'active' if active_page == 'programs' else '' }}">Programs</a>
+  <a href="{{ url_for('db_logic') }}" class="{{ 'active' if active_page == 'db_logic' else '' }}">DB Logic</a>
+  <a href="{{ url_for('contact') }}" class="{{ 'active' if active_page == 'contact' else '' }}">Contact</a>
+  {% if session.get('admin') %}
+    <a href="{{ url_for('manage_data') }}">Manage</a>
+    <a href="{{ url_for('logout') }}">Logout</a>
+  {% else %}
+    <a href="{{ url_for('login') }}" class="{{ 'active' if active_page == 'login' else '' }}">Admin Login</a>
+  {% endif %}
+</nav>
+  </header>
+
+  <div class="container">
+    <h2 class="title">Conservation Program Management</h2>
+
+    <!-- Add Program Form -->
+    <div class="program-form">
+      <h4>Add New Program</h4>
+      <form method="POST">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <input type="text" name="name" placeholder="Program Name" required>
+          </div>
+          <div class="col-md-6">
+            <input type="text" name="type" placeholder="Program Type" required>
+          </div>
+          <div class="col-md-4">
+            <input type="number" name="budget" placeholder="Budget (₹)" required>
+          </div>
+          <div class="col-md-4">
+            <input type="date" name="start" required>
+          </div>
+          <div class="col-md-4">
+            <input type="date" name="end" required>
+          </div>
+          <div class="col-md-6">
+            <select name="species_id" required>
+              <option value="">Select Species</option>
+              {% for s in species_list %}
+                <option value="{{ s.SpeciesID }}">{{ s.Name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col-md-12 text-center">
+            <button type="submit">➕ Add Program</button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- Table of Programs -->
+    <table class="table table-dark table-striped align-middle text-center">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Budget (₹)</th>
+          <th>Start</th>
+          <th>End</th>
+          <th>Species</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in programs %}
+        <tr>
+          <td>{{ p.ProgramID }}</td>
+          <td>{{ p.ProgramName }}</td>
+          <td>{{ p.Type }}</td>
+          <td>{{ p.Budget }}</td>
+          <td>{{ p.StartDate }}</td>
+          <td>{{ p.EndDate }}</td>
+          <td>{{ p.SpeciesName }}</td>
+          <td>
+            <form action="{{ url_for('delete_program', id=p.ProgramID) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this program?');">
+              <button class="btn btn-danger btn-sm">Delete</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <footer>
+    <p>WildTrack © 2025 | DBMS Mini Project by Kashyap Kumar</p>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Species - WildTrack</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header>
+    <div class="logo">WILDTRACK</div>
+    <nav>
+  <a href="{{ url_for('home') }}" class="{{ 'active' if active_page == 'home' else '' }}">Home</a>
+  <a href="{{ url_for('species') }}" class="{{ 'active' if active_page == 'species' else '' }}">Species</a>
+  <a href="{{ url_for('habitats') }}" class="{{ 'active' if active_page == 'habitats' else '' }}">Habitats</a>
+  <a href="{{ url_for('programs') }}" class="{{ 'active' if active_page == 'programs' else '' }}">Programs</a>
+  <a href="{{ url_for('db_logic') }}" class="{{ 'active' if active_page == 'db_logic' else '' }}">DB Logic</a>
+  <a href="{{ url_for('contact') }}" class="{{ 'active' if active_page == 'contact' else '' }}">Contact</a>
+  {% if session.get('admin') %}
+    <a href="{{ url_for('manage_data') }}">Manage</a>
+    <a href="{{ url_for('logout') }}">Logout</a>
+  {% else %}
+    <a href="{{ url_for('login') }}" class="{{ 'active' if active_page == 'login' else '' }}">Admin Login</a>
+  {% endif %}
+</nav>
+  </header>
+
+  <section class="recent">
+    <h2>Species List</h2>
+    <table>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Category</th>
+        <th>Endangered Status</th>
+        <th>Population</th>
+      </tr>
+      {% for s in species %}
+      <tr>
+        <td>{{ s.SpeciesID }}</td>
+        <td>{{ s.Name }}</td>
+        <td>{{ s.Category }}</td>
+        <td>{{ s.EndangeredStatus }}</td>
+        <td>{{ s.Population }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </section>
+
+  <footer>
+    <p>WildTrack © 2025 | By Kashyap K And Rohan S NayakL</p>
+  </footer>
+</body>
+</html>

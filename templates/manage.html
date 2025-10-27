@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Data Management - WildTrack</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='manage.css') }}">
+">
+  <style>
+    body { background-color: #0a0a0a; color: #f2f2f2; }
+    table { width: 100%; border-collapse: collapse; margin-top: 30px; }
+    th, td { padding: 10px; border-bottom: 1px solid #333; }
+    th { color: #5cff7a; text-align: left; }
+    .actions button { margin: 0 5px; }
+    .add-form { margin-top: 40px; background: #111; padding: 25px; border-radius: 12px; }
+    input, select { width: 100%; padding: 8px; margin: 8px 0; border-radius: 5px; border: none; }
+  </style>
+</head>
+<body>
+<header>
+  <div class="logo">🐾 WILDTRACK</div>
+  <nav>
+  <a href="{{ url_for('home') }}" class="{{ 'active' if active_page == 'home' else '' }}">Home</a>
+  <a href="{{ url_for('species') }}" class="{{ 'active' if active_page == 'species' else '' }}">Species</a>
+  <a href="{{ url_for('habitats') }}" class="{{ 'active' if active_page == 'habitats' else '' }}">Habitats</a>
+  <a href="{{ url_for('programs') }}" class="{{ 'active' if active_page == 'programs' else '' }}">Programs</a>
+  <a href="{{ url_for('db_logic') }}" class="{{ 'active' if active_page == 'db_logic' else '' }}">DB Logic</a>
+  <a href="{{ url_for('contact') }}" class="{{ 'active' if active_page == 'contact' else '' }}">Contact</a>
+  {% if session.get('admin') %}
+    <a href="{{ url_for('manage_data') }}">Manage</a>
+    <a href="{{ url_for('logout') }}">Logout</a>
+  {% else %}
+    <a href="{{ url_for('login') }}" class="{{ 'active' if active_page == 'login' else '' }}">Admin Login</a>
+  {% endif %}
+</nav>
+</header>
+
+<section class="container" style="padding:40px;">
+  <h1 style="color:#5cff7a;">Admin Data Management</h1>
+  <p>View, add, and edit species and habitats directly from the dashboard.</p>
+    <!-- ─────── Add New Species ─────── -->
+  <div class="add-form">
+    <h3 style="color:#5cff7a;">Add New Species</h3>
+    <form method="POST" action="/add_species">
+      <label>Name</label>
+      <input type="text" name="Name" required>
+      <label>Category</label>
+      <input type="text" name="Category" required>
+      <label>Status</label>
+      <input type="text" name="EndangeredStatus" required>
+      <label>Population</label>
+      <input type="number" name="Population" required>
+      <button type="submit" style="background:#5cff7a;color:#000;font-weight:600;">Add Species</button>
+    </form>
+  </div>
+</section>
+  <!-- ─────── Species Table ─────── -->
+  <h2>Species</h2>
+  <table>
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Category</th>
+      <th>Status</th>
+      <th>Population</th>
+      <th>Actions</th>
+    </tr>
+    {% for s in species %}
+    <tr>
+      <td>{{ s.SpeciesID }}</td>
+      <td>{{ s.Name }}</td>
+      <td>{{ s.Category }}</td>
+      <td>{{ s.EndangeredStatus }}</td>
+      <td>{{ s.Population }}</td>
+      <td class="actions">
+        <form action="/delete_species/{{ s.SpeciesID }}" method="POST" style="display:inline;">
+          <button type="submit" style="background:#d9534f;color:#fff;border:none;padding:5px 10px;">Delete</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+<div class="add-form">
+  <h3 style="color:#5cff7a;">Trigger Tests</h3>
+  <form action="/trigger_rescue" method="POST" style="margin-bottom:20px;">
+    <label>Select Species to Rescue</label>
+    <select name="species_id" required>
+      <option value="">-- Choose a Species --</option>
+      {% for s in species %}
+        <option value="{{ s.SpeciesID }}">{{ s.Name }}</option>
+      {% endfor %}
+    </select>
+    <button type="submit" style="background:#5cff7a;color:#000;font-weight:600;width:100%;margin-top:10px;">
+       Rescue Selected Species
+    </button>
+  </form>
+
+
+
+
+
+
+<footer>
+  <p>WildTrack © 2025 | By Kashyap K And Rohan S Nayak</p>
+</footer>
+</body>
+</html>

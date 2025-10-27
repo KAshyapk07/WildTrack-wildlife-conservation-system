@@ -1,0 +1,187 @@
+/* ─────────── GLOBAL ─────────── */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+body {
+  background-color: #0a0a0a;
+  color: #f2f2f2;
+  overflow-x: hidden;
+}
+
+/* ─────────── HEADER ─────────── */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 80px;
+  background: rgba(0, 50, 0, 0.8);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.logo {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #5cff7a;
+  text-shadow: 0 0 15px #5cff7a;
+}
+
+nav a {
+  color: #f2f2f2;
+  margin: 0 20px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: 0.3s;
+}
+
+nav a:hover,
+nav a.active {
+  color: #5cff7a;
+  border-bottom: 2px solid #5cff7a;
+  padding-bottom: 3px;
+}
+
+/* ─────────── MAIN CONTAINER ─────────── */
+.container {
+  padding: 60px 80px;
+  background: radial-gradient(circle at top, #001a00, #000);
+  min-height: 100vh;
+}
+
+h1 {
+  color: #5cff7a;
+  text-shadow: 0 0 15px #4ce06b;
+  margin-bottom: 20px;
+}
+
+h2 {
+  margin-top: 40px;
+  color: #5cff7a;
+}
+
+p {
+  color: #ccc;
+}
+
+/* ─────────── TABLE ─────────── */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  background: #111;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+th, td {
+  padding: 12px 15px;
+  border-bottom: 1px solid #333;
+  text-align: left;
+}
+
+th {
+  background: #131313;
+  color: #5cff7a;
+  font-weight: 600;
+}
+
+tr:hover {
+  background: rgba(92, 255, 122, 0.05);
+}
+
+.actions button {
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.actions button:hover {
+  transform: scale(1.05);
+}
+
+.actions .delete-btn {
+  background: #ff5c5c;
+  color: #fff;
+}
+
+.actions .edit-btn {
+  background: #5cff7a;
+  color: #000;
+}
+
+/* ─────────── ADD FORM ─────────── */
+.add-form {
+  background: #101010;
+  margin-top: 50px;
+  padding: 40px;
+  border-radius: 15px;
+  box-shadow: 0 0 20px rgba(92, 255, 122, 0.15);
+}
+
+.add-form h3 {
+  color: #5cff7a;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.add-form label {
+  font-weight: 500;
+  display: block;
+  margin-top: 10px;
+  color: #ccc;
+}
+
+.add-form input,
+.add-form select {
+  width: 100%;
+  background: #1a1a1a;
+  color: #fff;
+  border: 1px solid #333;
+  border-radius: 8px;
+  padding: 10px;
+  margin-top: 5px;
+  transition: 0.3s;
+}
+
+.add-form input:focus,
+.add-form select:focus {
+  border-color: #5cff7a;
+  box-shadow: 0 0 10px #5cff7a;
+  outline: none;
+}
+
+.add-form button {
+  margin-top: 20px;
+  width: 100%;
+  background: #5cff7a;
+  color: #000;
+  font-weight: 600;
+  border: none;
+  border-radius: 25px;
+  padding: 12px 20px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.add-form button:hover {
+  background: #4ce06b;
+  box-shadow: 0 0 15px #4ce06b;
+}
+
+/* ─────────── FOOTER ─────────── */
+footer {
+  text-align: center;
+  padding: 20px;
+  color: #aaa;
+  border-top: 1px solid #333;
+  background: #0a0a0a;
+  margin-top: 40px;
+}

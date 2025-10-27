@@ -1,0 +1,99 @@
+/* ─────────── GLOBAL ─────────── */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+body {
+  background: radial-gradient(circle at top, #001a00, #000);
+  color: #f2f2f2;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ─────────── HEADER ─────────── */
+header {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #5cff7a;
+  font-weight: 700;
+  font-size: 1.8rem;
+  text-shadow: 0 0 20px #5cff7a;
+}
+
+/* ─────────── LOGIN BOX ─────────── */
+.form-section {
+  background: rgba(17, 17, 17, 0.9);
+  padding: 40px 60px;
+  border-radius: 15px;
+  box-shadow: 0 0 25px rgba(92, 255, 122, 0.2);
+  width: 350px;
+  text-align: center;
+  margin-top: 100px;
+}
+
+.form-section h1 {
+  color: #5cff7a;
+  margin-bottom: 30px;
+}
+
+.form-section form {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-section label {
+  text-align: left;
+  font-weight: 500;
+  color: #ccc;
+  margin: 10px 0 5px;
+}
+
+.form-section input {
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 8px;
+  color: #fff;
+  padding: 10px;
+  outline: none;
+  transition: 0.3s;
+}
+
+.form-section input:focus {
+  border-color: #5cff7a;
+  box-shadow: 0 0 10px #5cff7a;
+}
+
+.form-section button {
+  margin-top: 20px;
+  background: #5cff7a;
+  border: none;
+  color: #000;
+  padding: 10px;
+  border-radius: 25px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.form-section button:hover {
+  background: #4ce06b;
+  box-shadow: 0 0 15px #4ce06b;
+}
+
+.form-section p {
+  margin-top: 15px;
+  font-size: 0.9rem;
+}
+
+/* Flash message colors */
+.success { color: #5cff7a; }
+.danger { color: #ff5c5c; }
+.info { color: #5cafff; }

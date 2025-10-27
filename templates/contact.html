@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Contact Us - WildTrack</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='contact.css') }}">
+</head>
+<body>
+  <header>
+    <div class="logo"> WILDTRACK</div>
+    <nav>
+  <a href="{{ url_for('home') }}" class="{{ 'active' if active_page == 'home' else '' }}">Home</a>
+  <a href="{{ url_for('species') }}" class="{{ 'active' if active_page == 'species' else '' }}">Species</a>
+  <a href="{{ url_for('habitats') }}" class="{{ 'active' if active_page == 'habitats' else '' }}">Habitats</a>
+  <a href="{{ url_for('programs') }}" class="{{ 'active' if active_page == 'programs' else '' }}">Programs</a>
+  <a href="{{ url_for('db_logic') }}" class="{{ 'active' if active_page == 'db_logic' else '' }}">DB Logic</a>
+  <a href="{{ url_for('contact') }}" class="{{ 'active' if active_page == 'contact' else '' }}">Contact</a>
+  {% if session.get('admin') %}
+    <a href="{{ url_for('manage_data') }}">Manage</a>
+    <a href="{{ url_for('logout') }}">Logout</a>
+  {% else %}
+    <a href="{{ url_for('login') }}" class="{{ 'active' if active_page == 'login' else '' }}">Admin Login</a>
+  {% endif %}
+</nav>
+  </header>
+
+  <section class="contact-section">
+    <h1 class="contact-title">Get in Touch</h1>
+    <p class="contact-subtitle">We’d love to hear from you!  
+      This contact form is just for display — it doesn’t send data but demonstrates the front-end connection.</p>
+
+    <div class="contact-cards">
+      <div class="card">
+        <h3>Email</h3>
+        <p>wildtrack@pes.edu</p>
+      </div>
+      <div class="card">
+        <h3>Phone</h3>
+        <p>+91 98765 43210</p>
+      </div>
+      <div class="card">
+        <h3>Address</h3>
+        <p>PES University, Bengaluru</p>
+      </div>
+    </div>
+
+    <div class="contact-form">
+      <h2>Send us a message</h2>
+      <input type="text" placeholder="Your Name" readonly>
+      <input type="email" placeholder="Your Email" readonly>
+      <textarea rows="4" placeholder="Your Message" readonly></textarea>
+      <button disabled>Submit</button>
+      <p style="color:#888; margin-top:10px;">(Button inactive — form demo only)</p>
+    </div>
+  </section>
+
+  <footer>
+    <p>WildTrack © 2025 | By Kashyap K And Rohan S Nayak</p>
+  </footer>
+</body>
+</html>

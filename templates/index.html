@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+
+  <title>Wildlife Conservation Management System</title>
+  <link rel="stylesheet" href="static/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+  <!-- Navigation Bar -->
+  <header>
+    <div class="logo"> WILDTRACK</div>
+    <nav>
+  <a href="{{ url_for('home') }}" class="{{ 'active' if active_page == 'home' else '' }}">Home</a>
+  <a href="{{ url_for('species') }}" class="{{ 'active' if active_page == 'species' else '' }}">Species</a>
+  <a href="{{ url_for('habitats') }}" class="{{ 'active' if active_page == 'habitats' else '' }}">Habitats</a>
+  <a href="{{ url_for('programs') }}" class="{{ 'active' if active_page == 'programs' else '' }}">Programs</a>
+  <a href="{{ url_for('db_logic') }}" class="{{ 'active' if active_page == 'db_logic' else '' }}">DB Logic</a>
+  <a href="{{ url_for('contact') }}" class="{{ 'active' if active_page == 'contact' else '' }}">Contact</a>
+  {% if session.get('admin') %}
+    <a href="{{ url_for('manage_data') }}">Manage</a>
+    <a href="{{ url_for('logout') }}">Logout</a>
+  {% else %}
+    <a href="{{ url_for('login') }}" class="{{ 'active' if active_page == 'login' else '' }}">Admin Login</a>
+  {% endif %}
+</nav>
+  </header>
+
+<section class="hero" style="background: url('{{ url_for('static', filename='tiger.webp') }}') no-repeat center center/cover;">
+  <div class="hero-content">
+    <h1>Protect • Preserve • Prosper</h1>
+    <p>Empowering wildlife conservation through data-driven monitoring and digital management.</p>
+    <button onclick="window.location.href='/dashboard'">View Dashboard →</button>
+  </div>
+</section>
+
+  <!-- Dashboard Summary -->
+  <section class="dashboard">
+    <div class="card">
+      <h3>Total Species</h3>
+      <p>{{ total_species or 0 }}</p>
+    </div>
+    <div class="card">
+      <h3>Endangered Species</h3>
+      <p>{{ endangered_count or 0 }}</p>
+    </div>
+    <div class="card">
+      <h3>Total Sponsorship</h3>
+      <p>₹{{ total_sponsorship or 0 }}</p>
+    </div>
+    <div class="card">
+      <h3>Conservation Programs</h3>
+      <p>{{ program_count or 0 }}</p>
+    </div>
+  </section>
+
+  <!-- Recent Activity -->
+  <section class="recent">
+    <h2>Recent Conservation Efforts</h2>
+    <table>
+      <tr>
+        <th>Program</th>
+        <th>Species</th>
+        <th>Budget</th>
+        <th>Start Date</th>
+      </tr>
+      {% for row in recent_programs %}
+      <tr>
+        <td>{{ row.ProgramName }}</td>
+        <td>{{ row.SpeciesName }}</td>
+        <td>₹{{ row.Budget }}</td>
+        <td>{{ row.StartDate }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </section>
+<script>
+document.addEventListener("scroll", () => {
+  const model = document.querySelector(".model-wrapper");
+  const rect = model.getBoundingClientRect();
+  if (rect.top < window.innerHeight - 100) {
+    model.style.transition = "opacity 1.5s ease";
+    model.style.opacity = 1;
+  }
+});
+</script>
+
+  <!-- Footer -->
+  <footer>
+    <p>Developed By Kashyap K And Rohan S Nayak</p>
+    <p>PES University | UE23CS351A - DBMS</p>
+  </footer>
+</body>
+</html>

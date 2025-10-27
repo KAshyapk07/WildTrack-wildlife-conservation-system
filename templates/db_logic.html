@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Triggers, Procedures & Functions - WildTrack</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+ <style>
+  body {
+    background-color: #000;
+    color: #f2f2f2;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 80px;
+    background: rgba(0, 50, 0, 0.8);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .logo {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #5cff7a;
+    text-shadow: 0 0 12px #5cff7a;
+  }
+
+  nav a {
+    color: #f2f2f2;
+    margin: 0 15px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: 0.3s;
+  }
+
+  nav a:hover, nav a.active {
+    color: #5cff7a;
+  }
+
+  .section {
+    padding: 60px 10%;
+    background: radial-gradient(circle at top, #001900, #000);
+    min-height: 100vh;
+  }
+
+  h1 {
+    text-align: center;
+    font-size: 2.4rem;
+    color: #5cff7a;
+    margin-bottom: 40px;
+    text-shadow: 0 0 20px #4ce06b;
+  }
+
+  h2 {
+    font-size: 1.6rem;
+    color: #5cff7a;
+    margin-top: 40px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  h2::before {
+    content: "💡";
+    font-size: 1.2rem;
+    color: #ff4081;
+  }
+
+
+  pre {
+    background: #101010;
+    color: #9effb0;
+    border-left: 4px solid #5cff7a;
+    padding: 18px;
+    border-radius: 10px;
+    overflow-x: auto;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    box-shadow: 0 0 10px rgba(92,255,122,0.15);
+    transition: 0.3s;
+  }
+
+  pre:hover {
+    box-shadow: 0 0 20px rgba(92,255,122,0.4);
+  }
+
+  .result-box {
+    margin-top: 30px;
+    background: linear-gradient(135deg, #111, #0b1b0b);
+    border: 1px solid #133313;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 0 20px rgba(92,255,122,0.15);
+  }
+
+  .result-box h3 {
+    color: #b4ffb8;
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+    text-shadow: 0 0 10px #4ce06b;
+  }
+
+  .result-box p {
+    margin: 8px 0;
+    font-size: 1rem;
+  }
+
+  .result-box strong {
+    color: #5cff7a;
+  }
+
+  footer {
+    text-align: center;
+    background: #0a0a0a;
+    padding: 20px;
+    font-size: 0.9rem;
+    border-top: 1px solid #333;
+    margin-top: 60px;
+    color: #aaa;
+  }
+</style>
+</head>
+<body>
+  <header>
+    <div class="logo">🐾 WILDTRACK</div>
+    <nav>
+  <a href="{{ url_for('home') }}" class="{{ 'active' if active_page == 'home' else '' }}">Home</a>
+  <a href="{{ url_for('species') }}" class="{{ 'active' if active_page == 'species' else '' }}">Species</a>
+  <a href="{{ url_for('habitats') }}" class="{{ 'active' if active_page == 'habitats' else '' }}">Habitats</a>
+  <a href="{{ url_for('programs') }}" class="{{ 'active' if active_page == 'programs' else '' }}">Programs</a>
+  <a href="{{ url_for('db_logic') }}" class="{{ 'active' if active_page == 'db_logic' else '' }}">DB Logic</a>
+  <a href="{{ url_for('contact') }}" class="{{ 'active' if active_page == 'contact' else '' }}">Contact</a>
+  {% if session.get('admin') %}
+    <a href="{{ url_for('manage_data') }}">Manage</a>
+    <a href="{{ url_for('logout') }}">Logout</a>
+  {% else %}
+    <a href="{{ url_for('login') }}" class="{{ 'active' if active_page == 'login' else '' }}">Admin Login</a>
+  {% endif %}
+</nav>
+  </header>
+
+  <section class="section">
+    <h1>Database Logic (Triggers, Procedures, and Functions)</h1>
+
+    <h2> Trigger: UpdatePopulationAfterRescue</h2>
+    <pre>
+DELIMITER //
+CREATE TRIGGER UpdatePopulationAfterRescue
+AFTER INSERT ON RescueOperation
+FOR EACH ROW
+BEGIN
+    UPDATE Species
+    SET Population = Population + 1
+    WHERE SpeciesID = NEW.SpeciesID;
+END //
+DELIMITER ;
+    </pre>
+
+    <h2> Trigger: UpdateLastCheckup</h2>
+    <pre>
+DELIMITER //
+CREATE TRIGGER UpdateLastCheckup
+AFTER INSERT ON MedicalRecord
+FOR EACH ROW
+BEGIN
+    UPDATE Species
+    SET EndangeredStatus = 
+        CASE
+            WHEN NEW.HealthStatus = 'Critical' THEN 'Endangered'
+            WHEN NEW.HealthStatus = 'Recovered' THEN 'Safe'
+            ELSE EndangeredStatus
+        END
+    WHERE SpeciesID = NEW.SpeciesID;
+END //
+DELIMITER ;
+    </pre>
+
+    <h2> Stored Procedures</h2>
+    <pre>
+DELIMITER //
+CREATE PROCEDURE AddConservationProgram (
+    IN p_Name VARCHAR(100),
+    IN p_Type VARCHAR(50),
+    IN p_Budget DECIMAL(12,2),
+    IN p_Start DATE,
+    IN p_End DATE,
+    IN p_SpeciesID INT
+)
+BEGIN
+    INSERT INTO ConservationProgram (Name, Type, Budget, StartDate, EndDate, SpeciesID)
+    VALUES (p_Name, p_Type, p_Budget, p_Start, p_End, p_SpeciesID);
+END //
+DELIMITER ;
+    </pre>
+
+    <h2>Functions</h2>
+    <pre>
+DELIMITER //
+CREATE FUNCTION TotalSponsorship(p_ProgramID INT)
+RETURNS DECIMAL(12,2)
+DETERMINISTIC
+BEGIN
+    DECLARE total DECIMAL(12,2);
+    SELECT SUM(Contribution) INTO total
+    FROM Sponsorship
+    WHERE ProgramID = p_ProgramID;
+    RETURN IFNULL(total, 0);
+END //
+DELIMITER ;
+
+SELECT TotalSponsorship(6);
+
+SELECT SpeciesCountByCategory('Mammal');
+
+    </pre>
+
+    <div class="result-box">
+      <h3>Example Outputs:</h3>
+      <p><strong>Total Sponsorship (Program 6):</strong> ₹{{ total_sponsor }}</p>
+      <p><strong>Total Mammals:</strong> {{ mammal_count }}</p>
+    </div>
+  </section>
+
+  <footer>
+    <p>WildTrack © 2025 |   Kashyap K And Rohan S Nayak</p>
+  </footer>
+</body>
+</html>

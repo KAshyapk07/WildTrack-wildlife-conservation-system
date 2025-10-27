@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>WildTrack Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    body { background-color: #0a0a0a; color: #f2f2f2; }
+    .dashboard-container { padding: 40px; }
+    .stats-card { background: #111; border-radius: 15px; padding: 25px; text-align: center; box-shadow: 0 0 10px rgba(92,255,122,0.1); transition: 0.3s; }
+    .stats-card:hover { box-shadow: 0 0 20px rgba(92,255,122,0.4); }
+    .stats-card h3 { color: #5cff7a; font-size: 1.3rem; }
+    .chart-card { background: #111; border-radius: 20px; padding: 30px; margin-top: 40px; }
+    canvas { max-height: 450px; width: 100% !important; }
+    .small-muted { color: #aaa; font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo"> WILDTRACK</div>
+    <nav>
+  <a href="{{ url_for('home') }}" class="{{ 'active' if active_page == 'home' else '' }}">Home</a>
+  <a href="{{ url_for('species') }}" class="{{ 'active' if active_page == 'species' else '' }}">Species</a>
+  <a href="{{ url_for('habitats') }}" class="{{ 'active' if active_page == 'habitats' else '' }}">Habitats</a>
+  <a href="{{ url_for('programs') }}" class="{{ 'active' if active_page == 'programs' else '' }}">Programs</a>
+  <a href="{{ url_for('db_logic') }}" class="{{ 'active' if active_page == 'db_logic' else '' }}">DB Logic</a>
+  <a href="{{ url_for('contact') }}" class="{{ 'active' if active_page == 'contact' else '' }}">Contact</a>
+  {% if session.get('admin') %}
+    <a href="{{ url_for('manage_data') }}">Manage</a>
+    <a href="{{ url_for('logout') }}">Logout</a>
+  {% else %}
+    <a href="{{ url_for('login') }}" class="{{ 'active' if active_page == 'login' else '' }}">Admin Login</a>
+  {% endif %}
+</nav>
+  </header>
+
+  <div class="dashboard-container container">
+    <h1 class="text-center text-success mb-4">Wildlife Analytics Dashboard</h1>
+
+    <!-- Statistic Cards -->
+    <div class="row g-4">
+      <div class="col-md-3">
+        <div class="stats-card">
+          <h3>Total Species</h3>
+          <p class="fs-3">{{ total_species }}</p>
+          <p class="small-muted">Unique species recorded</p>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="stats-card">
+          <h3>Endangered Species</h3>
+          <p class="fs-3">{{ endangered }}</p>
+          <p class="small-muted">Marked as Endangered</p>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="stats-card">
+          <h3>Programs</h3>
+          <p class="fs-3">{{ total_programs }}</p>
+          <p class="small-muted">Active conservation programs</p>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="stats-card">
+          <h3>Total Sponsorship</h3>
+          <p class="fs-3">₹{{ total_sponsorship }}</p>
+          <p class="small-muted">Funds received</p>
+        </div>
+      </div>
+    </div>
+      <section class="recent">
+    <h2>Category-wise Species Report</h2>
+    <table>
+      <tr>
+        <th>Category</th>
+        <th>Number of Species</th>
+        <th>Average Population</th>
+      </tr>
+      {% for r in category_report %}
+<tr>
+  <td>{{ r.Category }}</td>
+  <td>{{ r.species_count }}</td>
+  <td>{{ r.total_pop }}</td>
+</tr>
+{% endfor %}
+    </table>
+    <!-- Joins, Nested & Aggregate Section -->
+<div class="chart-card mt-5">
+  <h4 class="text-center text-success mb-4">Joins, Nested & Aggregate Queries</h4>
+
+  <h5 class="text-info">📘 Join: Program & Species</h5>
+  <table class="table table-dark table-hover">
+    <thead><tr><th>Program</th><th>Species</th><th>Budget</th></tr></thead>
+    <tbody>
+      {% for row in join_results %}
+      <tr>
+        <td>{{ row.ProgramName }}</td>
+        <td>{{ row.SpeciesName }}</td>
+        <td>₹{{ row.Budget }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <h5 class="text-info mt-4">🧩 Nested Query: High Budget Programs</h5>
+  <ul>
+    {% for n in nested_results %}
+      <li>{{ n.Name }}</li>
+    {% endfor %}
+  </ul>
+
+  <h5 class="text-info mt-4">📊 Aggregate Query: Average Program Budget</h5>
+  <p><b>₹{{ avg_budget }}</b></p>
+</div>
+
+<!-- Trigger, Procedure & Function Demo -->
+<div class="chart-card mt-5">
+  <h4 class="text-center text-success mb-4">Triggers, Procedures & Functions</h4>
+
+  <p><b>Trigger Demo:</b> Automatic population and endangered status updates on new records (handled internally).</p>
+
+  <h5 class="text-info mt-3">⚙️ Procedure: GetSpeciesByHabitat(3)</h5>
+  <table class="table table-dark table-hover">
+    <thead><tr><th>Name</th><th>Category</th><th>Status</th></tr></thead>
+    <tbody>
+      {% for s in proc_species %}
+      <tr>
+        <td>{{ s.Name }}</td>
+        <td>{{ s.Category }}</td>
+        <td>{{ s.EndangeredStatus }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <h5 class="text-info mt-4">🧮 Function Results</h5>
+  <p>Total Sponsorship (Program ID 6): ₹{{ total_contrib }}</p>
+  <p>Total Mammal Count: {{ mammal_count }}</p>
+</div>
+
+  </section>
+    <!-- Chart Section -->
+    <div class="chart-card mt-5">
+      <h4 class="text-center text-success mb-4">Population by Category</h4>
+      <canvas id="popChart" aria-label="Population by Category chart" role="img"></canvas>
+      <p id="chart-note" class="text-center small-muted mt-2"></p>
+    </div>
+  </div>
+
+  <footer>
+    <p>WildTrack © 2025 | Dashboard by Kashyap Kumar</p>
+  </footer>
+
+  <script>
+    // Data from Flask (Jinja -> JSON)
+    const categories = {{ categories | tojson | safe }};
+    const populations = {{ populations | tojson | safe }};
+
+    // Debug log (open browser console to inspect)
+    console.log('categories:', categories);
+    console.log('populations:', populations);
+
+    document.addEventListener('DOMContentLoaded', function () {
+      const canvas = document.getElementById('popChart');
+      if (!canvas) {
+        console.error('popChart canvas not found');
+        document.getElementById('chart-note').textContent = 'Chart element not found on page.';
+        return;
+      }
+      const ctx = canvas.getContext('2d');
+
+      // if no data, show friendly message and use demo data
+      if (!Array.isArray(categories) || categories.length === 0) {
+        document.getElementById('chart-note').textContent = 'No category data available. Showing placeholder demo.';
+      }
+      const safeCategories = (Array.isArray(categories) && categories.length) ? categories : ['No Data'];
+      const safePopulations = (Array.isArray(populations) && populations.length) ? populations : [0];
+
+      // build dataset colors (single color allowed)
+      const bgColors = safeCategories.map(() => 'rgba(92,255,122,0.8)');
+      const borderColors = safeCategories.map(() => 'rgba(74,229,110,1)');
+
+      // create chart
+      try {
+        new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: safeCategories,
+            datasets: [{
+              label: 'Total Population',
+              data: safePopulations,
+              backgroundColor: bgColors,
+              borderColor: borderColors,
+              borderWidth: 1
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { labels: { color: '#ddd' } },
+              tooltip: { bodyColor: '#222', titleColor: '#5cff7a' }
+            },
+            scales: {
+              x: { ticks: { color: '#ccc' }, grid: { color: 'transparent' } },
+              y: { ticks: { color: '#ccc' }, grid: { color: '#111' } }
+            }
+          }
+        });
+      } catch (err) {
+        console.error('Chart error:', err);
+        document.getElementById('chart-note').textContent = 'Error rendering chart — open console for details.';
+      }
+    });
+  </script>
+<div class="chart-card mt-4">
+  <h5 class="text-info">📡 Live Trigger Data (Species ID 1)</h5>
+  <table class="table table-dark table-hover">
+    <thead><tr><th>Species</th><th>Population</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>{{ trigger_info.Name }}</td>
+        <td>{{ trigger_info.Population }}</td>
+        <td>{{ trigger_info.EndangeredStatus }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+</body>
+</html>

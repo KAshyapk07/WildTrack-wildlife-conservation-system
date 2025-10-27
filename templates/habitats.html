@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Habitats - WildTrack</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header>
+    <div class="logo"> WILDTRACK</div>
+    <nav>
+  <a href="{{ url_for('home') }}" class="{{ 'active' if active_page == 'home' else '' }}">Home</a>
+  <a href="{{ url_for('species') }}" class="{{ 'active' if active_page == 'species' else '' }}">Species</a>
+  <a href="{{ url_for('habitats') }}" class="{{ 'active' if active_page == 'habitats' else '' }}">Habitats</a>
+  <a href="{{ url_for('programs') }}" class="{{ 'active' if active_page == 'programs' else '' }}">Programs</a>
+  <a href="{{ url_for('db_logic') }}" class="{{ 'active' if active_page == 'db_logic' else '' }}">DB Logic</a>
+  <a href="{{ url_for('contact') }}" class="{{ 'active' if active_page == 'contact' else '' }}">Contact</a>
+  {% if session.get('admin') %}
+    <a href="{{ url_for('manage_data') }}">Manage</a>
+    <a href="{{ url_for('logout') }}">Logout</a>
+  {% else %}
+    <a href="{{ url_for('login') }}" class="{{ 'active' if active_page == 'login' else '' }}">Admin Login</a>
+  {% endif %}
+</nav>
+  </header>
+
+  <section class="recent">
+    <h2>Habitat Information</h2>
+    <table>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Location</th>
+        <th>Area (sq.km)</th>
+        <th>Climate</th>
+        <th>Type</th>
+      </tr>
+      {% for h in habitats %}
+      <tr>
+        <td>{{ h.HabitatID }}</td>
+        <td>{{ h.Name }}</td>
+        <td>{{ h.Location }}</td>
+        <td>{{ h.Area }}</td>
+        <td>{{ h.Climate }}</td>
+        <td>{{ h.Type }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </section>
+
+  <footer>
+    <p>WildTrack © 2025 | Habitat Records | By Kashyap K And Rohan S Nayak</p>
+  </footer>
+</body>
+</html>

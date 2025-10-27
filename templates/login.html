@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Login - WildTrack</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
+</head>
+<body>
+  <header>
+    <div class="logo"> WILDTRACK</div>
+  </header>
+
+  <section class="form-section">
+    <h1>Admin Login</h1>
+    <form method="POST" action="/login">
+      <label>Username:</label>
+      <input type="text" name="username" required>
+      <label>Password:</label>
+      <input type="password" name="password" required>
+      <button type="submit">Login</button>
+    </form>
+   {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="flash-container">
+      {% for category, message in messages %}
+        {% if category in ['success', 'danger'] %}
+          <div class="flash-message {{ category }}">{{ message }}</div>
+        {% endif %}
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+  </section>
+</body>
+</html>
