@@ -221,13 +221,14 @@ mysql -u root -p wildlife_conservation < trig_pro_func_check.sql
 
 ## Dashboard Features
 
-|Page	|Functionality|
-|Dashboard |	Overview statistics, population charts, program summary|
-|Join Queries|	Species habitat associations, staff assignments, rescue operations|
-|Nested Queries|	Endangered species, high-budget programs, active researchers|
-|Aggregate Functions|	Population statistics, average program budget, sponsorship totals|
-|Triggers & Automation|	Real-time population updates, status changes, operational logs|
-|Procedures & Functions|	Habitat-based queries, species counts, funding calculations|
+| Page	| Functionality |  
+|-----------|-----------|  
+| Dashboard |	Overview statistics, population charts, program summary |  
+| Join Queries |	Species habitat associations, staff assignments, rescue operations |
+| Nested Queries |	Endangered species, high-budget programs, active researchers |  
+| Aggregate Functions |	Population statistics, average program budget, sponsorship totals |
+| Triggers & Automation |	Real-time population updates, status changes, operational logs |
+| Procedures & Functions |	Habitat-based queries, species counts, funding calculations |  
 
 ---
 
